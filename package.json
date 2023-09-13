@@ -1,0 +1,28 @@
+{
+  "name": "lsj",
+  "version": "1.0.0",
+  "description": "Lao(老)Shih(司)Ji(機)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chiisen/LaoShihJi"
+  },
+  "author": "sam",
+  "license": "ISC",
+  "bin": {
+    "lsj": "./index.js",
+    "keywords": [
+      "cli",
+      "commander",
+      "command",
+      "command line",
+      "console"
+    ]
+  },
+  "dependencies": {
+    "commander": "^11.0.0"
+  }
+}
