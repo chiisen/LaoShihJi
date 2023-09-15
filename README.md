@@ -13,3 +13,8 @@ npm link
 ```
 npm unlink lsj
 ```
+
+# CLI 範例測試
+```
+lsj -t 1234
+```
