@@ -2,6 +2,11 @@
 - Lao(老)Shih(司)Ji(機)
 - LSJ-CLI
 
+# 初始安裝
+```bash=
+npm ci
+```
+
 # CLI 名稱修改
 打開 package.json 檔案
 ```
