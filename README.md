@@ -24,11 +24,13 @@ npm link
 這樣你就不用部署到 npm 上就能直接使用。
 
 # 原始程式碼連結解安裝
+lsj-cli 是 package.json 檔案 name 的欄位內容
 ```
-npm unlink lsj
+npm unlink lsj-cli
 ```
 
 # CLI 範例測試
+lsj 是 package.json 檔案 bin 的欄位內容
 ```
 lsj -t 1234
 ```
