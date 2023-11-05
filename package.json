@@ -1,7 +1,7 @@
 {
-  "name": "lsj",
+  "name": "lsj-cli",
   "version": "1.0.0",
-  "description": "Lao(老)Shih(司)Ji(機)",
+  "description": "Lao(老)Shih(司)Ji(機)-CLI",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -13,15 +13,17 @@
   "author": "sam",
   "license": "ISC",
   "bin": {
-    "lsj": "./index.js",
-    "keywords": [
-      "cli",
-      "commander",
-      "command",
-      "command line",
-      "console"
-    ]
+    "lsj": "./index.js"
   },
+  "keywords": [
+    "js",
+    "javascript",
+    "cli",
+    "commander",
+    "command",
+    "command line",
+    "console"
+  ],
   "dependencies": {
     "commander": "^11.0.0",
     "redis": "^4.6.9"

@@ -2,6 +2,15 @@
 - Lao(老)Shih(司)Ji(機)
 - LSJ-CLI
 
+# CLI 名稱修改
+打開 package.json 檔案
+```
+"bin": {
+    "lsj": "./index.js"
+  },
+```
+修改 lsj 成為你想要的名稱
+
 # 原始程式碼連結安裝
 ```
 npm link
