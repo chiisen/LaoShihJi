@@ -3,8 +3,8 @@
 var program = require("commander");
 const redis = require("redis");
 const fs = require("fs");
-const xlsx = require("node-xlsx")
-const clc = require("cli-color")
+const xlsx = require("node-xlsx");
+const clc = require("cli-color");
 
 function errorColor(str) {
   // 添加 ANSI 转义字符，以将文本输出为红色
@@ -62,16 +62,27 @@ if (opts.excel) {
   }
 
   let str = "";
-  const data = getExcel(gameIdListXlsx)
-  data.forEach((row) => {
-    row.forEach((cell) => {
-      str += `"${cell}"` + ","
-    })
-    str += "\n"
-  })
-
-  const gameIdListCsv = `${__dirname}/GameList.csv`;
-  writeText(gameIdListCsv, str);
+  const data = getExcel(gameIdListXlsx);
+  if (data !== undefined) {
+    var rowCounter = 0;
+    data.forEach((row) => {
+      row.forEach((cell) => {
+        if (rowCounter == 0) {
+          str += `${cell}` + ",";
+        } else {
+          if (cell == "true") {
+            str += `"True"` + ",";
+          } else {
+            str += `"${cell}"` + ",";
+          }
+        }
+      });
+      str += "\n";
+      rowCounter += 1;
+    });
+    const gameIdListCsv = `${__dirname}/GameList.csv`;
+    writeText(gameIdListCsv, str);
+  }
 }
 
 /**
@@ -80,25 +91,25 @@ if (opts.excel) {
  * @param {string} fileName
  */
 function getExcel(fileName, isLog = false, sheetIndex = 0) {
-  console.log(clc.cyan(`"${fileName}" excel-parse start`))
+  console.log(clc.cyan(`"${fileName}" excel-parse start`));
 
-  const excel = []
-  const sheets = xlsx.parse(fileName)
-  let sheet = undefined
+  const excel = [];
+  const sheets = xlsx.parse(fileName);
+  let sheet = undefined;
   if (isNumeric(sheetIndex.toString())) {
-    sheet = sheets[sheetIndex]
+    sheet = sheets[sheetIndex];
   } else {
-    sheet = sheets.find((x) => x.name == sheetIndex)
+    sheet = sheets.find((x) => x.name == sheetIndex);
   }
 
   // 輸出每行內容
   sheet.data.forEach((row) => {
     // 陣列格式, 根據不同的索引取數據
-    excel.push(row)
-  })
+    excel.push(row);
+  });
 
-  console.log(clc.cyan(`"${fileName}" excel-parse end`))
-  return excel
+  console.log(clc.cyan(`"${fileName}" excel-parse end`));
+  return excel;
 }
 
 /**
@@ -108,7 +119,7 @@ function getExcel(fileName, isLog = false, sheetIndex = 0) {
  * @returns
  */
 function isNumeric(value) {
-  return /^-?\d+$/.test(value)
+  return /^-?\d+$/.test(value);
 }
 
 /**
@@ -118,5 +129,5 @@ function isNumeric(value) {
  * @param {*} insertText
  */
 function writeText(subPath, insertText) {
-  fs.writeFileSync(`${subPath}`, insertText, "utf8")
+  fs.writeFileSync(`${subPath}`, insertText, "utf8");
 }
