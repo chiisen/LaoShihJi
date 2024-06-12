@@ -25,7 +25,9 @@
     "console"
   ],
   "dependencies": {
+    "cli-color": "^2.0.4",
     "commander": "^11.0.0",
+    "node-xlsx": "^0.24.0",
     "redis": "^4.6.9"
   }
 }

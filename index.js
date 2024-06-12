@@ -1,19 +1,23 @@
 #!/usr/bin/env node
 
-var program = require("commander")
-const redis = require('redis')
+var program = require("commander");
+const redis = require("redis");
+const fs = require("fs");
+const xlsx = require("node-xlsx")
+const clc = require("cli-color")
 
 function errorColor(str) {
   // 添加 ANSI 转义字符，以将文本输出为红色
-  return `\x1b[31m${str}\x1b[0m`
+  return `\x1b[31m${str}\x1b[0m`;
 }
 
-console.log("程式啟動了!\n")
+console.log("程式啟動了!\n");
 
 program
   .version("1.0.0")
   .option("-t | --tinder <str>", "Tinder 可以吃嗎?")
   .option("-f | --file <str>", "file 讀取檔案")
+  .option("-e | --excel", "產生 Excel 範例檔案")
   .showHelpAfterError(errorColor("<使用 -h 參數可以提示更多使用功能>")) // 錯誤提示訊息
   .configureOutput({
     // 此处使输出变得容易区分
@@ -22,37 +26,97 @@ program
     // 将错误高亮显示
     outputError: (str, write) => write(errorColor(str)),
   })
-  .parse(process.argv)
+  .parse(process.argv);
 
-const opts = program.opts()
+const opts = program.opts();
 
-console.log("you ordered:" + opts.tinder)
-if (opts.tinder) 
-{
-    console.log("好吃!")
+if (opts.tinder) {
+  console.log("好吃!");
 
-    const client = redis.createClient(6379, '127.0.0.1');
-    client.connect();
+  const client = redis.createClient(6379, "127.0.0.1");
+  client.connect();
 
-    const sync = async () => {
-      const reply1 = await client.get("lsj");
-      console.log(reply1);
-    }    
+  const sync = async () => {
+    const reply1 = await client.get("lsj");
+    console.log(reply1);
+  };
 
-    sync()
+  sync();
 
-    client.quit()
-    
-}
-else
-{ 
-    console.log("不好吃!")
+  client.quit();
 }
 
-console.log("you ordered:" + opts.file)
-if (opts.file) 
-{
-  console.log("呼叫讀檔!")
+if (opts.file) {
+  console.log("呼叫讀檔!");
 }
 
+if (opts.excel) {
+  console.log("將 Excel 轉換為 csv 檔案!");
+  // 顯示目前所在路徑
+  console.log(__dirname);
 
+  const gameIdListXlsx = `${__dirname}/GameList.xlsx`;
+  if (!fs.existsSync(gameIdListXlsx)) {
+    console.error(`\n 讀檔失敗，找不到 ${gameIdListXlsx}`);
+    process.exit(1);
+  }
+
+  let str = "";
+  const data = getExcel(gameIdListXlsx)
+  data.forEach((row) => {
+    row.forEach((cell) => {
+      str += `"${cell}"` + ","
+    })
+    str += "\n"
+  })
+
+  const gameIdListCsv = `${__dirname}/GameList.csv`;
+  writeText(gameIdListCsv, str);
+}
+
+/**
+ * 讀取 Excel
+ *
+ * @param {string} fileName
+ */
+function getExcel(fileName, isLog = false, sheetIndex = 0) {
+  console.log(clc.cyan(`"${fileName}" excel-parse start`))
+
+  const excel = []
+  const sheets = xlsx.parse(fileName)
+  let sheet = undefined
+  if (isNumeric(sheetIndex.toString())) {
+    sheet = sheets[sheetIndex]
+  } else {
+    sheet = sheets.find((x) => x.name == sheetIndex)
+  }
+
+  // 輸出每行內容
+  sheet.data.forEach((row) => {
+    // 陣列格式, 根據不同的索引取數據
+    excel.push(row)
+  })
+
+  console.log(clc.cyan(`"${fileName}" excel-parse end`))
+  return excel
+}
+
+/**
+ * 檢查是否為數值
+ *
+ * @param {*} value
+ * @returns
+ */
+function isNumeric(value) {
+  return /^-?\d+$/.test(value)
+}
+
+/**
+ * 寫入純文字檔案
+ *
+ * @param {*} subPath
+ * @param {*} insertText
+ */
+function writeText(subPath, insertText) {
+  fs.writeFileSync(`${subPath}`, insertText, "utf8")
+}

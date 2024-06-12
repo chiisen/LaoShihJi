@@ -35,6 +35,11 @@ lsj 是 package.json 檔案 bin 的欄位內容
 lsj -t 1234
 ```
 
+# 產生 Excel 範例檔案
+```
+lsj -e
+```
+
 # git commit message
 - 常用描述
 ```
