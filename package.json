@@ -4,7 +4,8 @@
   "description": "Lao(老)Shih(司)Ji(機)-CLI",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "eslint": "eslint ."
   },
   "repository": {
     "type": "git",
@@ -25,8 +26,11 @@
     "console"
   ],
   "dependencies": {
+    "@babel/core": "^7.24.7",
+    "@babel/eslint-parser": "^7.24.7",
     "cli-color": "^2.0.4",
     "commander": "^11.0.0",
+    "eslint": "^7.32.0",
     "node-xlsx": "^0.24.0",
     "redis": "^4.6.9"
   }

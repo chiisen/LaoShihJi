@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-var program = require("commander");
+let program = require("commander");
 const redis = require("redis");
 const fs = require("fs");
 const xlsx = require("node-xlsx");
@@ -34,16 +34,16 @@ if (opts.tinder) {
   console.log("好吃!");
 
   const client = redis.createClient(6379, "127.0.0.1");
-  client.connect();
+  client.connect().then();
 
   const sync = async () => {
     const reply1 = await client.get("lsj");
     console.log(reply1);
   };
 
-  sync();
+  sync().then( );
 
-  client.quit();
+  client.quit().then();
 }
 
 if (opts.file) {
@@ -64,13 +64,13 @@ if (opts.excel) {
   let str = "";
   const data = getExcel(gameIdListXlsx);
   if (data !== undefined) {
-    var rowCounter = 0;
+    let rowCounter = 0;
     data.forEach((row) => {
       row.forEach((cell) => {
-        if (rowCounter == 0) {
+        if (rowCounter === 0) {
           str += `${cell}` + ",";
         } else {
-          if (cell == "true") {
+          if (cell === "true") {
             str += `"True"` + ",";
           } else {
             str += `"${cell}"` + ",";
@@ -89,18 +89,21 @@ if (opts.excel) {
  * 讀取 Excel
  *
  * @param {string} fileName
+ * @param isLog
+ * @param sheetIndex
  */
 function getExcel(fileName, isLog = false, sheetIndex = 0) {
   console.log(clc.cyan(`"${fileName}" excel-parse start`));
 
   const excel = [];
   const sheets = xlsx.parse(fileName);
-  let sheet = undefined;
+  let sheet;
   if (isNumeric(sheetIndex.toString())) {
     sheet = sheets[sheetIndex];
   } else {
-    sheet = sheets.find((x) => x.name == sheetIndex);
+    sheet = sheets.find((x) => x.name === sheetIndex);
   }
+  console.log(sheet)
 
   // 輸出每行內容
   sheet.data.forEach((row) => {
@@ -129,5 +132,6 @@ function isNumeric(value) {
  * @param {*} insertText
  */
 function writeText(subPath, insertText) {
-  fs.writeFileSync(`${subPath}`, insertText, "utf8");
+  const BOM = "\uFEFF";
+  fs.writeFileSync(`${subPath}`,BOM + insertText, "utf8");
 }
