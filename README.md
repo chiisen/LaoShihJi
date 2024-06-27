@@ -40,6 +40,16 @@ lsj -t 1234
 lsj -e
 ```
 
+# 猜星座
+```
+lsj -a
+```
+使用 https://github.com/cronvel/terminal-kit 套件來取得輸入
+```
+npm install terminal-kit
+```
+
+
 # git commit message
 - 常用描述
 ```

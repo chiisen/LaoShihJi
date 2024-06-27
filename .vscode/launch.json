@@ -13,9 +13,9 @@
             ],
             "program": "${workspaceFolder}\\index.js",
             "args": [
-                "-e"
+                "-a"
             ],
-            "console": "internalConsole"
+            "console": "integratedTerminal"
         }
     ]
 }
