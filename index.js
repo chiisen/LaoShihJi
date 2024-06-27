@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-let program = require("commander");
+const program = require("commander");
 const redis = require("redis");
 const fs = require("fs");
 const xlsx = require("node-xlsx");
@@ -84,6 +84,8 @@ if (opts.excel) {
       rowCounter += 1;
     });
     const gameIdListCsv = `${__dirname}/GameList.csv`;
+    const BOM = "\uFEFF";
+    str = BOM + str;
     writeText(gameIdListCsv, str);
   }
 }
@@ -106,7 +108,6 @@ function getExcel(fileName, isLog = false, sheetIndex = 0) {
   } else {
     sheet = sheets.find((x) => x.name === sheetIndex);
   }
-  console.log(sheet);
 
   // 輸出每行內容
   sheet.data.forEach((row) => {
@@ -135,8 +136,7 @@ function isNumeric(value) {
  * @param {*} insertText
  */
 function writeText(subPath, insertText) {
-  const BOM = "\uFEFF";
-  fs.writeFileSync(`${subPath}`, BOM + insertText, "utf8");
+  fs.writeFileSync(`${subPath}`, insertText, "utf8");
 }
 
 // 所屬的星座
