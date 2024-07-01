@@ -12,7 +12,7 @@ function commanderTranslate1(opts) {
   if (opts === undefined) {
     return;
   }
-  // 假設 readTextFile 是一個同步函數，用於讀取檔案內容()
+  // 假設 readTextFile 是一個同步函數，用於讀取檔案內容(要拿掉 <template> 標籤，不然會無發解析)
   const html = readTextFile("./AboutDirectionsView1.vue");
 
   // 使用 jsdom 解析 HTML
