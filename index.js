@@ -2,12 +2,13 @@
 
 const program = require("commander");
 const redis = require("redis");
-// Require the lib, get a working terminal
-var term = require("terminal-kit").terminal;
 
 const { commanderExcel } = require("./commander/excel");
 const { commanderAstrology } = require("./commander/astrology");
-const { commanderTranslate, commanderTranslate1 } = require("./commander/translate");
+const {
+  commanderTranslate,
+  commanderTranslate1,
+} = require("./commander/translate");
 
 function errorColor(str) {
   // 添加 ANSI 转义字符，以将文本输出为红色
@@ -25,8 +26,14 @@ program
     "讀取 Excel 檔案 GameList.xlsx 轉換為 GameList.csv 檔案"
   )
   .option("-a | --astrology", "猜星座(未完成)")
-  .option("-t | --translate", "取出 html (vue 檔案) 的 tag 內容轉成 Excel 檔案彙整給翻譯")
-  .option("-t1 | --translate1", "取出 html (vue 檔案) 的 tag 內容轉成 Excel 檔案彙整給翻譯")
+  .option(
+    "-t | --translate",
+    "取出 html (vue 檔案) 的 tag 內容轉成 Excel 檔案彙整給翻譯"
+  )
+  .option(
+    "-t1 | --translate1",
+    "取出 html (vue 檔案) 的 tag 內容轉成 Excel 檔案彙整給翻譯"
+  )
   .showHelpAfterError(errorColor("<使用 -h 參數可以提示更多使用功能>")) // 錯誤提示訊息
   .configureOutput({
     // 此处使输出变得容易区分
@@ -40,19 +47,23 @@ program
 const opts = program.opts();
 
 if (opts.demo) {
-  console.log("好吃!");
+  try {
+    console.log("好吃!");
 
-  const client = redis.createClient(6379, "127.0.0.1");
-  client.connect().then();
+    const client = redis.createClient(6379, "127.0.0.1");
+    client.connect().then();
 
-  const sync = async () => {
-    const reply1 = await client.get("lsj");
-    console.log(reply1);
-  };
+    const sync = async () => {
+      const reply1 = await client.get("lsj");
+      console.log(reply1);
+    };
 
-  sync().then();
+    sync().then();
 
-  client.quit().then();
+    client.quit().then();
+  } catch (error) {
+    console.error("錯誤訊息:", error.message);
+  }
 }
 
 // file 讀取檔案(目前無實作)
