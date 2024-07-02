@@ -2,6 +2,7 @@
 
 const program = require("commander");
 const redis = require("redis");
+const fs = require("fs");
 
 const { commanderExcel } = require("./commander/excel");
 const { commanderAstrology } = require("./commander/astrology");
@@ -20,7 +21,7 @@ console.log("程式啟動了!\n");
 program
   .version("1.0.0")
   .option("-d | --demo <str>", "tinder 可以吃嗎?(基礎範例無實作)")
-  .option("-f | --file <str>", "file 讀取檔案(目前無實作)")
+  .option("-f | --file <str>", "file 讀取檔案")
   .option(
     "-e | --excel",
     "讀取 Excel 檔案 GameList.xlsx 轉換為 GameList.csv 檔案"
@@ -66,9 +67,14 @@ if (opts.demo) {
   }
 }
 
-// file 讀取檔案(目前無實作)
+// file 讀取檔案
 if (opts.file) {
-  console.log("呼叫讀檔!");
+  try {
+    const data = fs.readFileSync(opts.file.trim(), "utf8");
+    console.log(data);
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 // 讀取 Excel 檔案 GameList.xlsx 轉換為 GameList.csv 檔案

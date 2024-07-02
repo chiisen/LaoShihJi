@@ -32,10 +32,10 @@ npm unlink lsj-cli
 # CLI 範例測試
 lsj 是 package.json 檔案 bin 的欄位內容
 ```
-lsj -t 1234
+lsj -d 1234
 ```
 
-# 產生 Excel 範例檔案
+# 讀取 Excel 檔案 GameList.xlsx 轉換為 GameList.csv 檔案
 ```
 lsj -e
 ```

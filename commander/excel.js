@@ -12,9 +12,9 @@ function commanderExcel(opts) {
 
   console.log("將 Excel 轉換為 csv 檔案!");
   // 顯示目前所在路徑
-  console.log(__dirname);
+  console.log(process.cwd());
 
-  const gameIdListXlsx = `${__dirname}/GameList.xlsx`;
+  const gameIdListXlsx = `${process.cwd()}/GameList.xlsx`;
   if (!fs.existsSync(gameIdListXlsx)) {
     console.error(`\n 讀檔失敗，找不到 ${gameIdListXlsx}`);
     process.exit(1);
