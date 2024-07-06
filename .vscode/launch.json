@@ -10,7 +10,7 @@
       "name": "Launch Program",
       "skipFiles": ["<node_internals>/**"],
       "program": "${workspaceFolder}\\index.js",
-      "args": ["-f C:/royal/gitlab/H1/h1walletapi/H1WalletAPI/Common/Service/Request"],
+      "args": ["-f D:/company/H1/h1walletapi/H1WalletAPI"],
       "console": "integratedTerminal"
     }
   ]

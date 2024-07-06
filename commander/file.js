@@ -13,6 +13,7 @@ function commanderFile(opts) {
   try {
     const dirPath = opts.trim();
     const files = findCsFiles(dirPath);
+    let count = 0;
     files.forEach(file => {
       console.log(file);
       const text = fs.readFileSync(file.trim(), "utf8");
@@ -20,6 +21,7 @@ function commanderFile(opts) {
 
       let list = []; // 宣告名為 list 的空陣列
       list.push("#nullable disable // 臨時禁用可為 null 的參考型別檢查");
+      list.push("#pragma warning disable CS8632 // 可為 Null 的參考型別註釋應只用於 '#nullable' 註釋內容中的程式碼。");
       lines.forEach((line) => {
         if (currentString(line.trim(), 'field&class')) {
           if (previousString(list, 'summary')) {
@@ -39,24 +41,25 @@ function commanderFile(opts) {
         }
       });
 
-      if (list.length === lines.length - 1) {
+      if (list.length === lines.length - 2) {
         // 不須寫檔案
       }
       else {
         // 將 list 的每個元素轉換成一行，並使用換行符號連接
         const data = list.join('\n');
         fs.writeFileSync(file.trim(), data, "utf8");
+        count++;
       }
 
     });
-
+    console.log(`新增註解 ${count} 檔案.`);
   } catch (err) {
     console.error(err);
   }
 }
 
 /**
- * 判斷是否為指定格式的字串
+ * 判斷目前這行是否為指定格式的字串
  * @param {*} text 
  * @returns 
  */
@@ -69,14 +72,31 @@ function currentString(text, type) {
       // 只處理類別
       return text.startsWith('public class');
     case 'field&class':
-      return (text.startsWith('public') && text.includes("{ get; set; }")) || text.startsWith('public class');
+      const publicCapitalPattern = /^public [A-Z]/; // 正則表達式，匹配 "public " 後跟一個大寫字母
+
+      return (text.startsWith('public') && text.includes("{ get; set; }"))
+        || text.startsWith('public class')
+        || text.startsWith('public async')
+        || text.startsWith('public bool')
+        || text.startsWith('public string')
+        || text.startsWith('public Task')
+        || text.startsWith("public enum")
+        || text.startsWith("public static")
+        || text.startsWith("public abstract class")
+        || text.startsWith("public void")
+        || text.startsWith("public interface")
+        || text.startsWith("public DateTime")
+        || text.startsWith("public int")
+        || text.startsWith("public long")
+        || text.startsWith("public (")
+        || publicCapitalPattern.test(text); // 使用正則表達式進行匹配
     default:
       return false;
   }
 }
 
 /**
- * 判斷是否為指定格式的字串
+ * 判斷上一行是否為指定格式的字串
  * @param {*} text 
  * @returns 
  */
@@ -84,7 +104,12 @@ function previousString(list, type) {
   switch (type) {
     case 'summary':
       const previousIndex = list.length - 1;
-      return list[previousIndex].includes("</summary>");
+      return list[previousIndex].includes("</summary>")
+        || list[previousIndex].includes("[Required]")
+        || list[previousIndex].includes("[Route(")
+        || list[previousIndex].includes("[HttpPost(")
+        || list[previousIndex].includes("[HttpGet(")
+        || list[previousIndex].includes("[ApiController]")
     default:
       return false;
   }
