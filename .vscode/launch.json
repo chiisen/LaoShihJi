@@ -10,7 +10,7 @@
       "name": "Launch Program",
       "skipFiles": ["<node_internals>/**"],
       "program": "${workspaceFolder}\\index.js",
-      "args": ["-f C:/royal/gitlab/H1/h1walletapi/"],
+      "args": ["-o C:/royal/gitlab/H1/h1walletapi_PRD"],
       "console": "integratedTerminal"
     }
   ]

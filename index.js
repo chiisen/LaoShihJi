@@ -11,6 +11,7 @@ const {
   commanderTranslate1,
 } = require("./commander/translate");
 const { commanderFile } = require("./commander/file");
+const { commanderFormat } = require("./commander/format");
 
 function errorColor(str) {
   // 添加 ANSI 转义字符，以将文本输出为红色
@@ -23,6 +24,7 @@ program
   .version("1.0.0")
   .option("-d | --demo <str>", "tinder 可以吃嗎?(基礎範例無實作)")
   .option("-f | --file <str>", "file 讀取 c# 檔案並新增註解")
+  .option("-o | --format <str>", "format 讀取 c# 檔案轉成 UTF8-BOM 檔案格式")
   .option(
     "-e | --excel",
     "讀取 Excel 檔案 GameList.xlsx 轉換為 GameList.csv 檔案"
@@ -71,6 +73,11 @@ if (opts.demo) {
 // file 讀取檔案
 if (opts.file) {
   commanderFile(opts.file);
+}
+
+// 轉為 UTF8-BOM 檔案格式
+if (opts.format) {
+  commanderFormat(opts.format);
 }
 
 // 讀取 Excel 檔案 GameList.xlsx 轉換為 GameList.csv 檔案
