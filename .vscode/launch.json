@@ -2,6 +2,7 @@
   // 使用 IntelliSense 以得知可用的屬性。
   // 暫留以檢視現有屬性的描述。
   // 如需詳細資訊，請瀏覽: https://go.microsoft.com/fwlink/?linkid=830387
+  // Windows 路徑用的分隔號為 '\'，要換成 '/' 才能在 launch.json 中正確使用
   "version": "0.2.0",
   "configurations": [
     {
