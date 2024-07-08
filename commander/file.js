@@ -110,6 +110,7 @@ function previousString(list, type) {
         || list[previousIndex].includes("[HttpPost(")
         || list[previousIndex].includes("[HttpGet(")
         || list[previousIndex].includes("[ApiController]")
+        || list[previousIndex].includes("</returns>")
     default:
       return false;
   }
