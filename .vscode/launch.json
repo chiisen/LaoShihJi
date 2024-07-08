@@ -5,12 +5,12 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "type": "pwa-node",
+      "type": "node",
       "request": "launch",
       "name": "Launch Program",
       "skipFiles": ["<node_internals>/**"],
       "program": "${workspaceFolder}\\index.js",
-      "args": ["-f D:/company/H1/h1walletapi/H1WalletAPI"],
+      "args": ["-f C:/royal/gitlab/H1/h1walletapi/"],
       "console": "integratedTerminal"
     }
   ]
