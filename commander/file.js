@@ -15,8 +15,9 @@ function commanderFile(opts) {
     const files = findCsFiles(dirPath);
     let count = 0;
     files.forEach((file) => {
-      console.log(file);
-      const text = fs.readFileSync(file.trim(), "utf8");
+      const filePath = file.trim();
+      console.log(filePath);
+      const text = fs.readFileSync(filePath, "utf8");
       const lines = text.split(/\r?\n/); // 將文字檔案的內容分割成一行一行的陣列
 
       let list = []; // 宣告名為 list 的空陣列
@@ -24,26 +25,31 @@ function commanderFile(opts) {
       // 檔頭插入註解或指令
       let addList = [
         "#nullable disable // 臨時禁用可為 null 的參考型別檢查",
-        //"#pragma warning disable CS8632 // 可為 Null 的參考型別註釋應只用於 '#nullable' 註釋內容中的程式碼。",
+        "#pragma warning disable CS8632 // 可為 Null 的參考型別註釋應只用於 '#nullable' 註釋內容中的程式碼。",
       ];
       addList.forEach((addLine) => {
-        list.push(addLine);
+        pushListInfo(list, addLine);
       });
 
       lines.forEach((line) => {
-        if (currentString(line.trim(), "field&class")) {
+        if (currentString(line, "field&class")) {
           if (previousString(list, "summary")) {
-            list.push(line);
+            pushListInfo(list, line);
           } else {
-            const spaceCount = line.indexOf("public"); // 指定空白數量
-            const spaceString = " ".repeat(spaceCount); // 生成包含指定數量空白的字串
-            list.push(spaceString + "/// <summary>");
-            list.push(spaceString + "/// ");
-            list.push(spaceString + "/// </summary>");
-            list.push(line); // 將符合條件的行添加到 list 陣列中
+            const firstNonWhitespaceIndex = line.search(/\S/); // 使用正則表達式找到第一個非空白字符
+            if (firstNonWhitespaceIndex > -1) {
+              console.log(`空白到第一個字的位數: ${firstNonWhitespaceIndex}，${line}`);
+              const spaceString = " ".repeat(firstNonWhitespaceIndex); // 生成包含指定數量空白的字串
+              pushListInfo(list, spaceString + "/// <summary>");
+              pushListInfo(list, spaceString + "/// ");
+              pushListInfo(list, spaceString + "/// </summary>");
+              pushListInfo(list, line);// 將符合條件的行添加到 list 陣列中
+            } else {
+              throw new Error("這一行只包含空白或是空行");
+            }
           }
         } else {
-          list.push(line);
+          pushListInfo(list, line);
         }
       });
 
@@ -62,7 +68,7 @@ function commanderFile(opts) {
         // 使用 UTF-8 編碼並包含 BOM，並將換行符號轉換為 Windows 格式
         const dataWithBOM = addBOMAndConvertNewlines(data);
 
-        fs.writeFileSync(file.trim(), dataWithBOM, "utf8");
+        fs.writeFileSync(filePath, dataWithBOM, "utf8");
         count++;
       }
     });
@@ -73,39 +79,42 @@ function commanderFile(opts) {
 }
 
 /**
+ * 
+ * @param {*} list 
+ * @param {*} obj 
+ */
+function pushListInfo(list, obj) {
+  list.push(obj);
+}
+
+/**
+ * 
+ * @param {*} line 
+ */
+function getLineType(line) {
+  if (line.includes("enum")) {
+    return "enum";
+  }
+  else if (line.includes("class")) {
+    return "class";
+  }
+  else {
+    return ""
+  }
+}
+
+/**
  * 判斷目前這行是否為指定格式的字串
  * @param {*} text
  * @returns
  */
 function currentString(text, type) {
   switch (type) {
-    case "field":
-      // 只處理欄位
-      return text.startsWith("public") && text.includes("{ get; set; }");
-    case "class":
-      // 只處理類別
-      return text.startsWith("public class");
     case "field&class":
-      const publicCapitalPattern = /^public [A-Z]/; // 正則表達式，匹配 "public " 後跟一個大寫字母
-
-      return (
-        (text.startsWith("public") && text.includes("{ get; set; }")) ||
-        text.startsWith("public class") ||
-        text.startsWith("public async") ||
-        text.startsWith("public bool") ||
-        text.startsWith("public string") ||
-        text.startsWith("public Task") ||
-        text.startsWith("public enum") ||
-        text.startsWith("public static") ||
-        text.startsWith("public abstract class") ||
-        text.startsWith("public void") ||
-        text.startsWith("public interface") ||
-        text.startsWith("public DateTime") ||
-        text.startsWith("public int") ||
-        text.startsWith("public long") ||
-        text.startsWith("public (") ||
-        publicCapitalPattern.test(text)
-      ); // 使用正則表達式進行匹配
+      const currentLine = text.trim();
+      return currentLine.startsWith("public")
+        || currentLine.startsWith("private")
+        || currentLine.startsWith("void");
     default:
       return false;
   }
@@ -120,30 +129,10 @@ function previousString(list, type) {
   switch (type) {
     case "summary":
       const previousIndex = list.length - 1;
+      const previousLine = list[previousIndex].trim();
       return (
-        list[previousIndex].includes("</summary>") ||
-        list[previousIndex].includes("[Required]") ||
-        list[previousIndex].includes("[Route(") ||
-        list[previousIndex].includes("[HttpPost(") ||
-        list[previousIndex].includes("[HttpGet(") ||
-        list[previousIndex].includes("[ApiController]") ||
-        list[previousIndex].includes("</returns>") ||
-        // W1
-        list[previousIndex].includes("[DefaultValue(") ||
-        list[previousIndex].includes("[StringLength(") ||
-        list[previousIndex].includes("[JsonIgnore(") ||
-        list[previousIndex].includes("[MaxLength(") ||
-        list[previousIndex].includes("[JsonProperty(") ||
-        list[previousIndex].includes("[Required]") ||
-        list[previousIndex].includes("[MinLength(") ||
-        list[previousIndex].includes("[Obsolete(") ||
-        list[previousIndex].includes("[Range(") ||
-        list[previousIndex].includes("[XmlElement(") ||
-        list[previousIndex].startsWith("//public") ||
-        list[previousIndex].includes("[Produces(") ||
-        list[previousIndex].includes("[HttpPost]")
-        
-        //list[previousIndex].startsWith("//")
+        previousLine.startsWith("/// <") ||
+        previousLine.startsWith("[")
       );
     default:
       return false;
