@@ -127,7 +127,23 @@ function previousString(list, type) {
         list[previousIndex].includes("[HttpPost(") ||
         list[previousIndex].includes("[HttpGet(") ||
         list[previousIndex].includes("[ApiController]") ||
-        list[previousIndex].includes("</returns>")
+        list[previousIndex].includes("</returns>") ||
+        // W1
+        list[previousIndex].includes("[DefaultValue(") ||
+        list[previousIndex].includes("[StringLength(") ||
+        list[previousIndex].includes("[JsonIgnore(") ||
+        list[previousIndex].includes("[MaxLength(") ||
+        list[previousIndex].includes("[JsonProperty(") ||
+        list[previousIndex].includes("[Required]") ||
+        list[previousIndex].includes("[MinLength(") ||
+        list[previousIndex].includes("[Obsolete(") ||
+        list[previousIndex].includes("[Range(") ||
+        list[previousIndex].includes("[XmlElement(") ||
+        list[previousIndex].startsWith("//public") ||
+        list[previousIndex].includes("[Produces(") ||
+        list[previousIndex].includes("[HttpPost]")
+        
+        //list[previousIndex].startsWith("//")
       );
     default:
       return false;
