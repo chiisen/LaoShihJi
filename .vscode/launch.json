@@ -11,7 +11,7 @@
       "name": "Launch Program",
       "skipFiles": ["<node_internals>/**"],
       "program": "${workspaceFolder}\\index.js",
-      "args": ["-s +"],
+      "args": ["-c +"],
       "console": "integratedTerminal"
     }
   ]

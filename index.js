@@ -13,6 +13,7 @@ const {
 const { commanderFile } = require("./commander/file");
 const { commanderFormat } = require("./commander/format");
 const { commanderStrategy } = require("./commander/strategy");
+const { commanderCheck } = require("./commander/check");
 
 function errorColor(str) {
   // 添加 ANSI 转义字符，以将文本输出为红色
@@ -27,6 +28,7 @@ program
   .option("-f | --file <str>", "file 讀取 c# 檔案並新增註解")
   .option("-o | --format <str>", "format 讀取 c# 檔案轉成 UTF8-BOM 檔案格式")
   .option("-s | --strategy <str>", "策略模式範例")
+  .option("-c | --check <str>", "重複資料檢查")
   .option(
     "-e | --excel",
     "讀取 Excel 檔案 GameList.xlsx 轉換為 GameList.csv 檔案"
@@ -112,3 +114,7 @@ if (opts.strategy) {
   commanderStrategy(opts.strategy);
 }
 
+// 重複資料檢查
+if (opts.check) {
+  commanderCheck(opts.check);
+}
