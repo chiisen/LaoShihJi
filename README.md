@@ -49,6 +49,14 @@ lsj -a
 npm install terminal-kit
 ```
 
+# abstract syntax tree
+```
+lsj -a 1
+```
+```
+npm install @babel/parser
+```
+
 
 # git commit message
 - 常用描述

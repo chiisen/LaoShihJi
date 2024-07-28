@@ -28,6 +28,7 @@
   "dependencies": {
     "@babel/core": "^7.24.7",
     "@babel/eslint-parser": "^7.24.7",
+    "@babel/parser": "^7.25.0",
     "cheerio": "^1.0.0-rc.12",
     "cli-color": "^2.0.4",
     "commander": "^11.0.0",
